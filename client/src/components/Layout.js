@@ -28,7 +28,7 @@ const Layout = ({
 }) => {
   return (
     <ErrorBoundary>
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gray-50" style={{ height: 'auto', maxHeight: 'none' }}>
         <Header navItems={navItems} showLogout={showLogout} />
         <Content fullWidth={fullWidth} className={contentClassName}>
           {children}

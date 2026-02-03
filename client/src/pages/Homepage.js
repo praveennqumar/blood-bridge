@@ -7,8 +7,8 @@ import { APP_CONFIG } from '../constants/appConstants';
 
 const Homepage = () => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const Homepage = () => {
       <Layout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full text-center">
-            <div className="mb-4">
+            <div className="mb-6">
               <svg
                 className="mx-auto h-12 w-12 text-red-600"
                 fill="none"

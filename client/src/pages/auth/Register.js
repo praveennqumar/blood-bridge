@@ -115,8 +115,8 @@ const Register = () => {
   const showHospitalName = formData.role === 'hospital';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50 flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50 flex items-center justify-center px-4 py-12 overflow-hidden" style={{ height: '100vh', maxHeight: '100vh' }}>
+      <div className="max-w-md w-full mx-auto overflow-y-auto" style={{ maxWidth: '448px', width: '100%', maxHeight: '100%' }}>
         {/* Logo/Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-red-600 rounded-full mb-4">

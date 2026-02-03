@@ -10,6 +10,30 @@
   /* overflow: hidden; */
 }
 
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  height: auto;
+  min-height: 100vh;
+}
+
+body {
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  resize: none;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  height: auto;
+  max-height: none;
+  overflow-x: hidden;
+  resize: none;
+}
+
 /* ===========
 ==== FORM
 =========== */
