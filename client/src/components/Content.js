@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 const Content = ({ children, className = '', fullWidth = false }) => {
   const containerClass = fullWidth
     ? 'w-full'
-    : 'max-w-7xl mx-auto w-full';
+    : 'max-w-6xl mx-auto w-full';
 
   return (
     <main className={`flex-1 ${containerClass} px-4 sm:px-6 lg:px-8 py-8 ${className}`}>

@@ -83,6 +83,34 @@ const loginController = async (req, res) => {
   }
 };
 
+const forgotPasswordController = async (req, res) => {
+  try {
+    const user = await userModel.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    await userModel.findByIdAndUpdate(user._id, { password: hashedPassword });
+    return res.status(200).send({
+      success: true,
+      message: "Password Reset Successfully",
+      user,
+      hashedPassword,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error In Forgot Password API", 
+      error,
+    });
+  }
+};
+
 //GET CURRENT USER
 const currentUserController = async (req, res) => {
   try {
@@ -102,4 +130,4 @@ const currentUserController = async (req, res) => {
   }
 };
 
-module.exports = { registerController, loginController, currentUserController };
+module.exports = { registerController, loginController, currentUserController, forgotPasswordController };

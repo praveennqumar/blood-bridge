@@ -66,7 +66,7 @@ const Footer = ({ links = [] }) => {
                 >
                   {link.label}
                 </a>
-              ))}
+              ))} 
             </div>
           )}
 
