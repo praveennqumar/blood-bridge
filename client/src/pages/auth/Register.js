@@ -15,14 +15,102 @@ const Register = () => {
     website: '',
     organisationName: '',
     hospitalName: '',
+    otp: '',
   });
   const [loading, setLoading] = useState(false);
+  const [verified, setVerified] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
+  // const [otp, setOtp] = useState('');
+  // const [otpError, setOtpError] = useState('');
+  // const [otpLoading, setOtpLoading] = useState(false);
+  // const [otpSuccess, setOtpSuccess] = useState(false);
+  // const [otpMessage, setOtpMessage] = useState('');
+  // const [otpTimeout, setOtpTimeout] = useState(null);
+  // const [otpTimeoutMessage, setOtpTimeoutMessage] = useState('');
+  // const [otpTimeoutTimeout, setOtpTimeoutTimeout] = useState(null);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleGenerateOTP = async (e) => {
+    e.preventDefault();
+
+    // Validate email before generating OTP
+    if (!formData.email) {
+      toast.error('Please enter your email address first');
+      return;
+    }
+
+    setOtpLoading(true);
+    try {
+      const response = await fetch(API_ENDPOINTS.GENERATE_OTP, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: formData.email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast.success(data.message || 'OTP has been sent to your email address');
+        setVerified(false); // Reset verification status when new OTP is generated
+      } else {
+        toast.error(data.message || 'Failed to generate OTP. Please try again.');
+      }
+    } catch (err) {
+      if (err.message === 'Failed to fetch') {
+        toast.error('Cannot connect to server. Please make sure the backend server is running.');
+      } else {
+        toast.error('Failed to generate OTP. Please try again.');
+      }
+      console.error('OTP generation error:', err);
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+
+    if (!formData.email) {
+      toast.error('Please enter your email address first');
+      return;
+    }
+
+    if (!formData.otp) {
+      toast.error('Please enter the OTP');
+      return;
+    }
+
+    try {
+      const response = await fetch(API_ENDPOINTS.VERIFY_OTP, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: formData.email, otp: formData.otp }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.message || 'OTP verified successfully');
+        setVerified(true);
+      } else {
+        toast.error(data.message || 'OTP verification failed');
+        setVerified(false);
+      }
+    } catch (error) {
+      console.error('OTP verification error:', error);
+      toast.error('OTP verification failed. Please try again.');
+      setVerified(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -32,6 +120,12 @@ const Register = () => {
     // Validation
     if (!formData.role) {
       toast.error('Please select a role');
+      setLoading(false);
+      return;
+    }
+
+    if (!verified) {
+      toast.error('Please verify the OTP before registering');
       setLoading(false);
       return;
     }
@@ -251,15 +345,63 @@ const Register = () => {
               />
             </div>
 
-            {/* Password Field */}
+            {/* OTP Field */}
             <div>
+              <label
+                htmlFor="otp"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                OTP <span className="text-red-500">*</span>
+              </label>
+              <div className="space-y-2">
+                <div className="relative flex">
+                  <input
+                    type="text"
+                    id="otp"
+                    name="otp"
+                    value={formData.otp}
+                    onChange={handleChange}
+                    required
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all duration-200"
+                    placeholder="Enter your OTP"
+                    maxLength={6}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleGenerateOTP}
+                    disabled={otpLoading || !formData.email}
+                    className="px-3 py-3 bg-red-600 text-white rounded-r-lg font-medium hover:bg-red-800 focus:outline-none transition-all duration-400 disabled:opacity-80 whitespace-nowrap"
+                  >
+                    {otpLoading ? 'Sending...' : 'Generate OTP'}
+                  </button>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleVerifyOtp}
+                    className="px-3 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  >
+                    Verify OTP
+                  </button>
+                  {verified ? (
+                    <span className="text-sm text-green-600">✓ OTP verified</span>
+                  ) : (
+                    <span className="text-sm text-gray-500">OTP not verified</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div >
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Password <span className="text-red-500">*</span>
               </label>
-              <input
+             
+                <input
                 type="password"
                 id="password"
                 name="password"

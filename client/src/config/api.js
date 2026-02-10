@@ -6,6 +6,9 @@ export const API_ENDPOINTS = {
   LOGIN: `${API_BASE_URL}/api/v1/auth/login`,
   CURRENT_USER: `${API_BASE_URL}/api/v1/auth/current-user`,
   FORGOT_PASSWORD: `${API_BASE_URL}/api/v1/auth/forgot-password`,
+  GENERATE_OTP: `${API_BASE_URL}/api/v1/auth/send-mail`,
+  VERIFY_OTP: `${API_BASE_URL}/api/v1/auth/verify-otp`,
+  
 };
 
 export default API_BASE_URL;
