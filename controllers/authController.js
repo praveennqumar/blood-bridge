@@ -1,4 +1,7 @@
 const userModel = require("../models/userModel");
+const otpModel = require("../models/EmailOpt");
+const generateOTP = require("../utils/otp.util");
+const sendEmail = require("../utils/sendemail.util");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -105,7 +108,7 @@ const forgotPasswordController = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Error In Forgot Password API", 
+      message: "Error In Forgot Password API",
       error,
     });
   }
@@ -130,4 +133,54 @@ const currentUserController = async (req, res) => {
   }
 };
 
-module.exports = { registerController, loginController, currentUserController, forgotPasswordController };
+const otpController = async (req, res) => {
+  const createOtp = generateOTP();
+  const otp = new otpModel({
+    email: req.body.email,
+    otp: createOtp,
+    otpExpiry: new Date(Date.now() + 5 * 60 * 1000), // 5 mins
+  });
+  await otp.save();
+  try {
+    console.log("kjhh")
+    await sendEmail({
+      to: req.body.email,
+      subject: "Otp received",
+      html:  `<h1>Email sent successfullys ${createOtp} 🚀</h1>`,
+    });
+    res.json({ success: true, message: "Email sent successfully", otp : createOtp });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Email failed" });
+  }
+};
+
+const verifyOtp = async (req,res) => {
+  try{
+    const { email, otp } = req.body;
+    const otpRecord = await otpModel.findOne({ email }).sort({ otpExpiry: -1 });
+    if (otpRecord.otpExpiry < new Date()) {
+      return res.status(400).json({
+        message: "OTP expired",
+      });
+    }
+    if(otp != otpRecord.otp){
+      return res.status(400).json({
+        message : "otp not matchedss "
+      });
+    }
+    otpRecord.isVerified = true;
+    await otpRecord.save();
+    res.json({
+      message: "OTP verified successfully",
+    });
+  } catch(error){
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+}
+
+
+
+module.exports = { registerController, loginController, currentUserController, forgotPasswordController, otpController, verifyOtp };

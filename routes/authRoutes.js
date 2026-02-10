@@ -4,6 +4,8 @@ const {
   loginController,
   currentUserController,
   forgotPasswordController,
+  otpController,
+  verifyOtp,
 } = require("../controllers/authController");
 
 const authMiddleware = require("../middlewares/authMiddleware");
@@ -22,5 +24,9 @@ router.post("/forgot-password", forgotPasswordController);
 
 //GET CURRENT USER || GET
 router.get("/current-user", authMiddleware, currentUserController);
+
+router.post("/send-mail", otpController);
+
+router.post("/verify-otp", verifyOtp)
 
 module.exports = router;
