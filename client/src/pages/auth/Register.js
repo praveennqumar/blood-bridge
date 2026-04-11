@@ -124,11 +124,11 @@ const Register = () => {
       return;
     }
 
-    if (!verified) {
-      toast.error('Please verify the OTP before registering');
-      setLoading(false);
-      return;
-    }
+        // if (!verified) {
+        //   toast.error('Please verify the OTP before registering');
+        //   setLoading(false);
+        //   return;
+        // }
 
     // Prepare data based on role
     const submitData = {
@@ -346,7 +346,7 @@ const Register = () => {
             </div>
 
             {/* OTP Field */}
-            <div>
+            {/* <div>
               <label
                 htmlFor="otp"
                 className="block text-sm font-medium text-gray-700 mb-2"
@@ -390,7 +390,7 @@ const Register = () => {
                   )}
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Password Field */}
             <div >
@@ -400,8 +400,8 @@ const Register = () => {
               >
                 Password <span className="text-red-500">*</span>
               </label>
-             
-                <input
+
+              <input
                 type="password"
                 id="password"
                 name="password"

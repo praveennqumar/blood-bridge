@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Homepage from './pages/Homepage';
@@ -10,6 +10,14 @@ import PublicRoute from './components/PublicRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import ForgotPassword from './pages/auth/ForgotPassword';
 
+// Organisation pages
+import OrgDashboard from './pages/organisation/OrgDashboard';
+import OrgInventory from './pages/organisation/OrgInventory';
+import OrgDonorRequests from './pages/organisation/OrgDonorRequests';
+import OrgHospitalRequests from './pages/organisation/OrgHospitalRequests';
+import OrgCamps from './pages/organisation/OrgCamps';
+import OrgReports from './pages/organisation/OrgReports';
+
 /**
  * Main App Component
  * Root component that sets up routing and global error handling
@@ -18,12 +26,62 @@ function App() {
   return (
     <ErrorBoundary>
       <Routes>
-        {/* Protected Routes */}
+        {/* General protected home */}
         <Route
           path="/"
           element={
             <ProtectedRoute>
               <Homepage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ── Organisation routes ── */}
+        <Route
+          path="/org/dashboard"
+          element={
+            <ProtectedRoute>
+              <OrgDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/org/inventory"
+          element={
+            <ProtectedRoute>
+              <OrgInventory />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/org/donor-requests"
+          element={
+            <ProtectedRoute>
+              <OrgDonorRequests />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/org/hospital-requests"
+          element={
+            <ProtectedRoute>
+              <OrgHospitalRequests />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/org/camps"
+          element={
+            <ProtectedRoute>
+              <OrgCamps />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/org/reports"
+          element={
+            <ProtectedRoute>
+              <OrgReports />
             </ProtectedRoute>
           }
         />
@@ -53,6 +111,9 @@ function App() {
             </PublicRoute>
           }
         />
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <ToastContainer
         position="top-right"

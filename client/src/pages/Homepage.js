@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Loading from '../components/Loading';
 import { getCurrentUser, getStoredUser } from '../services/userService';
 import { getUserDisplayName, getUserRole } from '../utils/userUtils';
-import { APP_CONFIG } from '../constants/appConstants';
+import { APP_CONFIG, USER_ROLES } from '../constants/appConstants';
 
 const Homepage = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,17 +18,27 @@ const Homepage = () => {
       try {
         setLoading(true);
         setError(null);
-        
+
         // Try to get cached user first for faster initial render
         const cachedUser = getStoredUser();
         if (cachedUser) {
           setUser(cachedUser);
+          // Redirect org users immediately if cached
+          if (cachedUser.role === USER_ROLES.ORGANISATION) {
+            navigate('/org/dashboard', { replace: true });
+            return;
+          }
         }
 
         // Fetch fresh user data
         const userData = await getCurrentUser();
         if (userData) {
           setUser(userData);
+          // Redirect organisation role to their dedicated dashboard
+          if (userData.role === USER_ROLES.ORGANISATION) {
+            navigate('/org/dashboard', { replace: true });
+            return;
+          }
         } else if (!cachedUser) {
           setError('Unable to load user data. Please try refreshing the page.');
         }
@@ -39,7 +51,7 @@ const Homepage = () => {
     };
 
     fetchUser();
-  }, []);
+  }, [navigate]);
 
   const handleImageError = () => {
     setImageError(true);
@@ -47,7 +59,7 @@ const Homepage = () => {
 
   if (loading) {
     return (
-      <Layout>
+      <Layout user={user}>
         <Loading message="Loading your profile..." />
       </Layout>
     );
@@ -55,7 +67,7 @@ const Homepage = () => {
 
   if (error && !user) {
     return (
-      <Layout>
+      <Layout user={user}>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full text-center">
             <div className="mb-6">
@@ -88,7 +100,7 @@ const Homepage = () => {
   }
 
   return (
-    <Layout>
+    <Layout user={user}>
       <div className="space-y-8">
         {/* Welcome Section with Application Icon */}
         <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-2xl shadow-xl p-8 text-white">
@@ -141,7 +153,7 @@ const Homepage = () => {
         </div>
 
         {/* User Information Card */}
-        {user && (
+        {/* {user && (
           <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
               Your Profile Information
@@ -178,7 +190,7 @@ const Homepage = () => {
               )}
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Quick Actions or Information Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
