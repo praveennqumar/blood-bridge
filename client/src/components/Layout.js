@@ -17,6 +17,7 @@ import ErrorBoundary from './ErrorBoundary';
  * @param {boolean} props.showLogout - Whether to show logout button in header
  * @param {boolean} props.fullWidth - Whether content should be full width
  * @param {string} props.contentClassName - Additional CSS classes for content
+ * @param {Object} props.user - Authenticated user object for header display
  */
 const Layout = ({
   children,
@@ -25,11 +26,12 @@ const Layout = ({
   showLogout = true,
   fullWidth = false,
   contentClassName = '',
+  user = null,
 }) => {
   return (
     <ErrorBoundary>
       <div className="min-h-screen flex flex-col bg-gray-50" style={{ height: 'auto', maxHeight: 'none' }}>
-        <Header navItems={navItems} showLogout={showLogout} />
+        <Header navItems={navItems} showLogout={showLogout} user={user} />
         <Content fullWidth={fullWidth} className={contentClassName}>
           {children}
         </Content>
@@ -57,6 +59,7 @@ Layout.propTypes = {
   showLogout: PropTypes.bool,
   fullWidth: PropTypes.bool,
   contentClassName: PropTypes.string,
+  user: PropTypes.object,
 };
 
 export default Layout;
